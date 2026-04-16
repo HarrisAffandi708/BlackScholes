@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from math import log, sqrt, exp, pow
+from math import log, sqrt, exp
 from scipy.stats import norm
 
 st.set_page_config(
@@ -127,7 +127,7 @@ with st.sidebar:
     st.divider()
     st.markdown("Heatmap parameters")
     min_spot_price = st.number_input("Min Spot Price (σ)", value=80.00)
-    risk_free = st.number_input("Max Spot price", value=120.00)
+    risk_free_map = st.number_input("Max Spot price", value=120.00)
     min_volatility = st.slider("Min Volatility for Heatmap", 0.00, 1.00, 0.50)
     max_volatility = st.slider("Max Volatility for Heatmap", 0.00, 1.00, 0.50)
 
@@ -138,7 +138,7 @@ df = pd.DataFrame([{
     "Strike Price": f"{strike_price:.4f}",
     "Time to Maturity (Years)": f"{maturity:.4f}",
     "Volatility (σ)": f"{volatility:.4f}",
-    "Risk-Free Interest Rate": f"{risk_free:.4f}"
+    "Risk-Free Interest Rate": f"{risk_free_map:.4f}"
 }])
 
 st.dataframe(df, use_container_width=True, hide_index=True)
@@ -149,7 +149,7 @@ st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
 
 
 def callOrPut(bool, asset_price,strike_price, maturity, volatility, risk_free):
-    d1 = (log(asset_price/strike_price) + (risk_free + ((volatility)**2)/2) * maturity)/(volatility*(sqrt(maturity)))
+    d1 = ( log(asset_price/strike_price) + (risk_free + ((volatility)**2)/2) * maturity)/(volatility * (sqrt(maturity)))
     d2 = d1 - (volatility * sqrt(maturity))
 
     if(bool == "call"):
