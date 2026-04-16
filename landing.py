@@ -74,5 +74,12 @@ with st.sidebar:
     volatility = st.number_input("Volatility (σ)", value=0.20)
     risk_free = st.number_input("Risk-Free Interest Rate", value=0.05)
 
+    st.divider()
+    st.markdown("Heatmap parameters")
+    min_spot_price = st.number_input("Min Spot Price (σ)", value=80.00)
+    risk_free = st.number_input("Max Spot price", value=120.00)
+    min_volatility = st.slider("Min Volatility for Heatmap", 0.00, 1.00, 0.50)
+    max_volatility = st.slider("Max Volatility for Heatmap", 0.00, 1.00, 0.50)
+
 st.title("Black scholes pricing model")
 st.write("Figure out how to do this part later")
