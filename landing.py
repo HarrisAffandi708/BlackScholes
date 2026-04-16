@@ -146,17 +146,26 @@ put_d2 = 0.00
 
 
 #d1 calculation
-def call(asset_price,strike_price, maturity, volatility, risk_free):
+
+
+def callOrPut(bool, asset_price,strike_price, maturity, volatility, risk_free):
     d1 = (log(asset_price/strike_price) + (risk_free + ((volatility)**2)/2) * maturity)/(volatility*(sqrt(maturity)))
     d2 = d1 - (volatility * sqrt(maturity))
 
-    call_price = (asset_price * norm.cdf(d1)) - (strike_price * (exp(-risk_free * maturity)) * norm.cdf(d2))
-    return call_price
+    if(bool == "call"):
+        call_price = (asset_price * norm.cdf(d1)) - (strike_price * (exp(-risk_free * maturity)) * norm.cdf(d2))
+        return call_price
+    elif(bool == "put"):
+        put_price = (strike_price * (exp(-risk_free * maturity)) * norm.cdf(-d2)) - (asset_price * norm.cdf(-d1))
+        return put_price
+
+    return "error"
 
 
 
-call_value = call(asset_price,strike_price, maturity, volatility, risk_free)
-put_value = 5.55
+
+call_value = callOrPut("call", asset_price,strike_price, maturity, volatility, risk_free)
+put_value = callOrPut("put", asset_price,strike_price, maturity, volatility, risk_free)
 col1, col2 = st.columns([1, 1], gap="medium")
 
 with col1:
