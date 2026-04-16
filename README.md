@@ -11,7 +11,8 @@ streamlit
 ## steps 
 python -m env .env
 <br>source .venv/bin/activate
-<br>deactivate
+<br>download the dependencies
+<br>to deactivate the env: deactivate
 
 # Details
 ## Author
