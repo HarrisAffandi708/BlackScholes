@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from math import log, sqrt, exp
+from math import log, sqrt, exp, pow
 from scipy.stats import norm
 
 st.set_page_config(
@@ -138,10 +138,25 @@ st.dataframe(df, use_container_width=True, hide_index=True)
 
 st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
 
-#put and call 
-call_value = 10.47
-put_value = 5.55
+#put and call logic adn display
+call_d1 = 0.00
+call_d2 = 0.00
+put_d1 = 0.00
+put_d2 = 0.00
 
+
+#d1 calculation
+def call(asset_price,strike_price, maturity, volatility, risk_free):
+    d1 = (log(asset_price/strike_price) + (risk_free + ((volatility)**2)/2) * maturity)/(volatility*(sqrt(maturity)))
+    d2 = d1 - (volatility * sqrt(maturity))
+
+    call_price = (asset_price * norm.cdf(d1)) - (strike_price * (exp(-risk_free * maturity)) * norm.cdf(d2))
+    return call_price
+
+
+
+call_value = call(asset_price,strike_price, maturity, volatility, risk_free)
+put_value = 5.55
 col1, col2 = st.columns([1, 1], gap="medium")
 
 with col1:
