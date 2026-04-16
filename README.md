@@ -1,4 +1,4 @@
-# BlackScholes
+# Black Scholes
 A mini project regarding the black scholes model
 
 
