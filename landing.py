@@ -12,7 +12,6 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-/* Main page spacing */
 .block-container {
     padding-top: 2rem;
     padding-left: 3rem;
@@ -20,7 +19,7 @@ st.markdown("""
     max-width: 100%;
 }
 
-/* Sidebar */
+
 section[data-testid="stSidebar"] {
     background-color: #1e1e2f;
     padding-top: 20px;
@@ -62,14 +61,13 @@ section[data-testid="stSidebar"] {
     height: 34px;
 }
 
-/* Title */
 .main-title {
     font-size: 3.5rem;
     font-weight: 800;
+    margin-top: 3rem;
     margin-bottom: 1rem;
 }
 
-/* Cards */
 .value-box {
     border-radius: 20px;
     overflow: hidden;
@@ -126,10 +124,8 @@ with st.sidebar:
     volatility = st.number_input("Volatility (σ)", value=0.20, format="%.2f")
     risk_free = st.number_input("Risk-Free Interest Rate", value=0.05, format="%.2f")
 
-# Title
 st.markdown('<div class="main-title">Black-Scholes Pricing Model</div>', unsafe_allow_html=True)
 
-# Table
 df = pd.DataFrame([{
     "Current Asset Price": f"{asset_price:.4f}",
     "Strike Price": f"{strike_price:.4f}",
@@ -140,10 +136,9 @@ df = pd.DataFrame([{
 
 st.dataframe(df, use_container_width=True, hide_index=True)
 
-# Space under table
 st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
 
-# Cards
+#put and call 
 call_value = 10.47
 put_value = 5.55
 
