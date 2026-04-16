@@ -6,6 +6,7 @@ A mini project regarding the black scholes model
 streamlit
 <br>pandas
 <br>numpy
+<br>scipy
 
 ## steps 
 python -m env .env
@@ -13,5 +14,5 @@ python -m env .env
 <br>deactivate
 
 # Details
-## Authors
+## Author
 - Harris Ilhan Bin Ahmad Affandi
