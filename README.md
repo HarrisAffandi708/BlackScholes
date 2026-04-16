@@ -11,3 +11,7 @@ streamlit
 python -m env .env
 <br>source .venv/bin/activate
 <br>deactivate
+
+# Details
+## Authors
+- Harris Ilhan Bin Ahmad Affandi
