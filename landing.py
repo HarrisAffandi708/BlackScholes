@@ -138,14 +138,7 @@ st.dataframe(df, use_container_width=True, hide_index=True)
 
 st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
 
-#put and call logic adn display
-call_d1 = 0.00
-call_d2 = 0.00
-put_d1 = 0.00
-put_d2 = 0.00
-
-
-#d1 calculation
+#put and call logic and display
 
 
 def callOrPut(bool, asset_price,strike_price, maturity, volatility, risk_free):
