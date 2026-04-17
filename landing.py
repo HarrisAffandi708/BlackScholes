@@ -3,12 +3,15 @@ import pandas as pd
 import numpy as np
 from math import log, sqrt, exp
 from scipy.stats import norm
+import sqlite3
 
 st.set_page_config(
     page_title="Black Scholes project",
     page_icon="📈",
     layout="wide"
 )
+
+con = sqlite3.connect("database1.db")
 
 st.markdown("""
 <style>
