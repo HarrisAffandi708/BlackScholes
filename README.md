@@ -23,6 +23,7 @@ python -m vevnv .venv
 ## Black scholes option pricing heat map (pnl)
 ![Alt text](images/pnl2.png)
 The pnl values shows the pnl of the inputs given by the values above this section (without pnl image) combined with the call/put purchase price
+<br>
 ![Alt text](images/pnl.png)
 This heatmap shows the pnl given a range of spot prices and volatilty with a set strike price. In this example, the spot price range is 80 to 120. The volatility range is 0.2 to 0.5. The strike price is 99.88. Let's take the first row and column for the call heatmap, it shows the value -8.12. This means that based on black scholes model, the fair price for the option is 1.88 due to the volatility and spot price, however we paid 10 for the it. This means that we lost 8.12 on this trade.
 
