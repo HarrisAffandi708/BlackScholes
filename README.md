@@ -7,6 +7,7 @@ streamlit
 <br>pandas
 <br>numpy
 <br>scipy
+<br>matplotlib
 
 ## steps 
 python -m vevnv .venv
