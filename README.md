@@ -6,6 +6,7 @@ A mini project regarding the black scholes model
 streamlit
 <br>pandas
 <br>numpy
+<br>math
 <br>scipy
 <br>matplotlib
 
