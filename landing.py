@@ -12,6 +12,18 @@ st.set_page_config(
 )
 
 con = sqlite3.connect("database1.db")
+cursor = con.cursor()
+
+# cursor.execute("""
+# CREATE TABLE IF NOT EXISTS users (
+#     id INTEGER PRIMARY KEY AUTOINCREMENT,
+#     name TEXT,
+#     age INTEGER
+# )
+# """)
+
+con.commit()
+con.close()
 
 st.markdown("""
 <style>
@@ -152,6 +164,9 @@ st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
 
 
 def callOrPut(bool, asset_price,strike_price, maturity, volatility, risk_free):
+    if( len(bool) == 0 or asset_price == 0 or strike_price == 0 or maturity == 0 or volatility == 0 or risk_free == 0):
+        return 0.0
+
     d1 = ( log(asset_price/strike_price) + (risk_free + ((volatility)**2)/2) * maturity)/(volatility * (sqrt(maturity)))
     d2 = d1 - (volatility * sqrt(maturity))
 
@@ -162,7 +177,19 @@ def callOrPut(bool, asset_price,strike_price, maturity, volatility, risk_free):
         put_price = (strike_price * (exp(-risk_free * maturity)) * norm.cdf(-d2)) - (asset_price * norm.cdf(-d1))
         return put_price
 
-    return "error"
+    return 0.0
+
+def pnlData(option_type, purchase_price, strike_price, maturity, risk_free, spot_prices, volatilities):
+    pnl_matrix = []
+
+    for x in volatilities:
+        row = []
+        for y in spot_prices:
+            price = callOrPut(option_type, y, strike_price, maturity, x, risk_free)
+            pnl = price - strike_price
+            row.append(pnl)
+        pnl_matrix.append(row)
+
 
 
 
@@ -186,3 +213,9 @@ with col2:
         <div class="value-number">${put_value:.2f}</div>
     </div>
     """, unsafe_allow_html=True)
+
+st.markdown('<div class="main-title">Options pricing heatmap</div>', unsafe_allow_html=True)
+st.info("Explore how option prices change due to volatility and spot price with the same strike price")
+
+
+
