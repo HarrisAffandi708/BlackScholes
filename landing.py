@@ -3,27 +3,12 @@ import pandas as pd
 import numpy as np
 from math import log, sqrt, exp
 from scipy.stats import norm
-import sqlite3
 
 st.set_page_config(
     page_title="Black Scholes project",
     page_icon="📈",
     layout="wide"
 )
-
-con = sqlite3.connect("database1.db")
-cursor = con.cursor()
-
-# cursor.execute("""
-# CREATE TABLE IF NOT EXISTS users (
-#     id INTEGER PRIMARY KEY AUTOINCREMENT,
-#     name TEXT,
-#     age INTEGER
-# )
-# """)
-
-con.commit()
-con.close()
 
 st.markdown("""
 <style>
@@ -141,19 +126,26 @@ with st.sidebar:
 
     st.divider()
     st.markdown("Heatmap parameters")
-    min_spot_price = st.number_input("Min Spot Price (σ)", value=80.00)
-    risk_free_map = st.number_input("Max Spot price", value=120.00)
+    call_price = st.number_input("Call Purchase Price", min_value=0.00, value=10.00)
+    put_price = st.number_input("Put Purchase Price", min_value=0.00, value=5.00)
+    min_spot_price = st.number_input("Min Spot Price (σ)", min_value=0.00, value=80.00)
+    max_spot_price = st.number_input("Max Spot price", min_value=0.00, value=120.00)
     min_volatility = st.slider("Min Volatility for Heatmap", 0.00, 1.00, 0.50)
     max_volatility = st.slider("Max Volatility for Heatmap", 0.00, 1.00, 0.50)
+
+    if min_spot_price >= max_spot_price:
+        st.warning("Min Spot Price must be less than Max Spot Price.")
+    if min_volatility >= max_volatility:
+        st.warning("Min Volatility must be less than Max Volatility.")
 
 st.markdown('<div class="main-title">Black-Scholes Pricing Model</div>', unsafe_allow_html=True)
 
 df = pd.DataFrame([{
-    "Current Asset Price": f"{asset_price:.4f}",
-    "Strike Price": f"{strike_price:.4f}",
-    "Time to Maturity (Years)": f"{maturity:.4f}",
-    "Volatility (σ)": f"{volatility:.4f}",
-    "Risk-Free Interest Rate": f"{risk_free_map:.4f}"
+    "Current Asset Price": f"{asset_price:.2f}",
+    "Strike Price": f"{strike_price:.2f}",
+    "Time to Maturity (Years)": f"{maturity:.2f}",
+    "Volatility (σ)": f"{volatility:.2f}",
+    "Risk-Free Interest Rate": f"{risk_free:.2f}"
 }])
 
 st.dataframe(df, use_container_width=True, hide_index=True)
@@ -164,7 +156,7 @@ st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
 
 
 def callOrPut(bool, asset_price,strike_price, maturity, volatility, risk_free):
-    if( len(bool) == 0 or asset_price == 0 or strike_price == 0 or maturity == 0 or volatility == 0 or risk_free == 0):
+    if( len(bool) == 0 or asset_price == 0 or strike_price == 0 or maturity == 0 or volatility == 0):
         return 0.0
 
     d1 = ( log(asset_price/strike_price) + (risk_free + ((volatility)**2)/2) * maturity)/(volatility * (sqrt(maturity)))
@@ -186,9 +178,15 @@ def pnlData(option_type, purchase_price, strike_price, maturity, risk_free, spot
         row = []
         for y in spot_prices:
             price = callOrPut(option_type, y, strike_price, maturity, x, risk_free)
-            pnl = price - strike_price
+            pnl = price - purchase_price
             row.append(pnl)
         pnl_matrix.append(row)
+    df = pd.DataFrame(
+        pnl_matrix,
+        index=[f"{v:.2f}" for v in volatilities],
+        columns=[f"{s:.2f}" for s in spot_prices]
+    )
+    return df
 
 
 
@@ -216,6 +214,72 @@ with col2:
 
 st.markdown('<div class="main-title">Options pricing heatmap</div>', unsafe_allow_html=True)
 st.info("Explore how option prices change due to volatility and spot price with the same strike price")
+
+call_pnl = call_value - call_price
+put_pnl = put_value - put_price
+
+call_pnl_class = "call-box" if call_pnl >= 0 else "put-box"
+put_pnl_class = "call-box" if put_pnl >= 0 else "put-box"
+
+col3, col4 = st.columns([1, 1], gap="medium")
+
+with col3:
+    st.markdown(f"""
+    <div class="value-box {call_pnl_class}">
+        <div class="value-title">CALL PnL</div>
+        <div class="value-number">${call_pnl:.2f}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col4:
+    st.markdown(f"""
+    <div class="value-box put-box">
+        <div class="value-title">PUT PnL</div>
+        <div class="value-number">${put_pnl:.2f}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+#heatmap part
+if min_spot_price < max_spot_price and min_volatility < max_volatility:
+    spot_prices = np.linspace(min_spot_price, max_spot_price, 10)
+    volatilities = np.linspace(min_volatility, max_volatility, 10)
+
+    call_pnl_df = pnlData(
+        "call",
+        call_price,
+        strike_price,
+        maturity,
+        risk_free,
+        spot_prices,
+        volatilities
+    )
+
+    put_pnl_df = pnlData(
+        "put",
+        put_price,
+        strike_price,
+        maturity,
+        risk_free,
+        spot_prices,
+        volatilities
+    )
+
+    st.subheader("Call PnL Heatmap")
+    st.dataframe(
+        call_pnl_df.style.format("{:.2f}").background_gradient(cmap="RdYlGn", axis=None),
+        use_container_width=True
+    )
+
+    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+
+    st.subheader("Put PnL Heatmap")
+    st.dataframe(
+        put_pnl_df.style.format("{:.2f}").background_gradient(cmap="RdYlGn", axis=None),
+        use_container_width=True
+    )
+else:
+    st.error("Please make sure the minimum values are less than the maximum values for the heatmap.")
+
 
 
 
