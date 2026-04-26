@@ -130,7 +130,7 @@ with st.sidebar:
     put_price = st.number_input("Put Purchase Price", min_value=0.00, value=5.00)
     min_spot_price = st.number_input("Min Spot Price (σ)", min_value=0.00, value=80.00)
     max_spot_price = st.number_input("Max Spot price", min_value=0.00, value=120.00)
-    min_volatility = st.slider("Min Volatility for Heatmap", 0.00, 1.00, 0.50)
+    min_volatility = st.slider("Min Volatility for Heatmap", 0.00, 1.00, 0.2)
     max_volatility = st.slider("Max Volatility for Heatmap", 0.00, 1.00, 0.50)
 
     if min_spot_price >= max_spot_price:
